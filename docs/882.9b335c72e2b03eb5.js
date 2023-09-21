@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkng_vicarius=self.webpackChunkng_vicarius||[]).push([[882],{4882:(m,n,u)=>{u.r(n),u.d(n,{HomeModule:()=>a});var l=u(6895),e=u(1571);let a=(()=>{class o{}return o.\u0275fac=function(c){return new(c||o)},o.\u0275mod=e.oAB({type:o}),o.\u0275inj=e.cJS({imports:[l.ez]}),o})()}}]);
