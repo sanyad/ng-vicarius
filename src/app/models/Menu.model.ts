@@ -1,19 +1,21 @@
-import {GetTypeOf} from './GetTypeOf';
-
 export class MenuModel {
+  id: number | null;
   name: string;
   link: string;
   depth: number;
   target: string;
   lft: number;
   parent: number;
+  items: MenuModel[];
+  showSubMenu: boolean;
+  is_active: boolean;
   color?: string;
   svg?: string;
   png?: string;
-  items?: MenuModel[] | null;
   position?: number;
 
   constructor(data: any) {
+    this.id = +data.id || null;
     this.name = data.name || '';
     this.link = data.items ? null : data.link ? data.link : '';
     this.depth = +data.depth || 0;
@@ -22,7 +24,9 @@ export class MenuModel {
     this.parent = data.parent || null;
     this.svg = data.svg || undefined;
     this.png = data.png || undefined;
-    this.items = data.items ? GetTypeOf(data.items).map(i => new MenuModel(i)) : null;
+    this.showSubMenu = false;
+    this.is_active = false;
+    this.items = [];
     if (data.position) {
       this.position = +data.position;
     }

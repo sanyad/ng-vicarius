@@ -7,59 +7,89 @@
     <symbol id="list" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
       <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
     </symbol>
+    <symbol id="close" viewBox="0 0 41.756 41.756">
+      <path d="M27.948,20.878L40.291,8.536c1.953-1.953,1.953-5.119,0-7.071c-1.951-1.952-5.119-1.952-7.07,0L20.878,13.809L8.535,1.465
+                  c-1.951-1.952-5.119-1.952-7.07,0c-1.953,1.953-1.953,5.119,0,7.071l12.342,12.342L1.465,33.22c-1.953,1.953-1.953,5.119,0,7.071
+                  C2.44,41.268,3.721,41.755,5,41.755c1.278,0,2.56-0.487,3.535-1.464l12.343-12.342l12.343,12.343
+                  c0.976,0.977,2.256,1.464,3.535,1.464s2.56-0.487,3.535-1.464c1.953-1.953,1.953-5.119,0-7.071L27.948,20.878z"/>
+    </symbol>
   </svg>
 </div>
-<div class="wrapper">
-  <div class="toolbar" role="banner">
-    <button mat-button [matMenuTriggerFor]="animals" class="menu-btn"><svg class="bi" aria-hidden="true"><use xlink:href="#list"></use></svg></button>
-    <mat-menu #animals="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="vertebrates">Vertebrates</button>
-      <button mat-menu-item [matMenuTriggerFor]="invertebrates">Invertebrates</button>
-    </mat-menu>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #drawer class="example-sidenav"
+               mode="over"
+               [fixedInViewport]="true"
+               [fixedTopGap]="0"
+               [fixedBottomGap]="0">
+    <div class="menu__wrap-close"
+         (click)="closeMenu(drawer)">
+      <svg class="menu__close">
+        <use xlink:href="#close"></use>
+      </svg>
+    </div>
 
-    <mat-menu #vertebrates="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="fish">Fishes</button>
-      <button mat-menu-item [matMenuTriggerFor]="amphibians">Amphibians</button>
-      <button mat-menu-item [matMenuTriggerFor]="reptiles">Reptiles</button>
-      <button mat-menu-item>Birds</button>
-      <button mat-menu-item>Mammals</button>
-    </mat-menu>
-
-    <mat-menu #invertebrates="matMenu">
-      <button mat-menu-item>Insects</button>
-      <button mat-menu-item>Molluscs</button>
-      <button mat-menu-item>Crustaceans</button>
-      <button mat-menu-item>Corals</button>
-      <button mat-menu-item>Arachnids</button>
-      <button mat-menu-item>Velvet worms</button>
-      <button mat-menu-item>Horseshoe crabs</button>
-    </mat-menu>
-
-    <mat-menu #fish="matMenu">
-      <button mat-menu-item>Baikal oilfish</button>
-      <button mat-menu-item>Bala shark</button>
-      <button mat-menu-item>Ballan wrasse</button>
-      <button mat-menu-item>Bamboo shark</button>
-      <button mat-menu-item>Banded killifish</button>
-    </mat-menu>
-
-    <mat-menu #amphibians="matMenu">
-      <button mat-menu-item>Sonoran desert toad</button>
-      <button mat-menu-item>Western toad</button>
-      <button mat-menu-item>Arroyo toad</button>
-      <button mat-menu-item>Yosemite toad</button>
-    </mat-menu>
-
-    <mat-menu #reptiles="matMenu">
-      <button mat-menu-item>Banded Day Gecko</button>
-      <button mat-menu-item>Banded Gila Monster</button>
-      <button mat-menu-item>Black Tree Monitor</button>
-      <button mat-menu-item>Blue Spiny Lizard</button>
-      <button mat-menu-item disabled>Velociraptor</button>
-    </mat-menu>
-
+    <ul class="menu">
+      <li *ngFor="let parent of menu">
+        <span class="menu__name" (click)="openSubmenu(parent, drawer)" [ngClass]="{'is_active': parent.is_active}">
+          <span *ngIf="parent.svg" [innerHtml]="getSvgOfItemList(parent.svg)"></span>
+          <span *ngIf="parent.png" class="icon-png">
+            <img [src]="parent.png" alt="icon">
+          </span>
+          {{parent.name}}
+          <mat-icon *ngIf="parent.items.length">{{parent.showSubMenu ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+        </span>
+        <ul class="submenu" *ngIf="parent.showSubMenu">
+          <li *ngFor="let firstChild of parent.items">
+            <span class="menu__name" (click)="openSubmenu(firstChild, drawer)" [ngClass]="{'is_active': firstChild.is_active}">
+              <span *ngIf="firstChild.svg" [innerHtml]="getSvgOfItemList(firstChild.svg)"></span>
+              <span *ngIf="firstChild.png" class="icon-png">
+                <img [src]="firstChild.png" alt="icon">
+              </span>
+              {{firstChild.name}}
+              <mat-icon *ngIf="firstChild.items.length">{{firstChild.showSubMenu ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+            </span>
+            <ul class="submenu" *ngIf="firstChild.showSubMenu">
+              <li *ngFor="let secondChild of firstChild.items">
+                <span class="menu__name" (click)="openSubmenu(secondChild, drawer)" [ngClass]="{'is_active': secondChild.is_active}">
+                  <span *ngIf="secondChild.svg" [innerHtml]="getSvgOfItemList(secondChild.svg)"></span>
+                  <span *ngIf="secondChild.png" class="icon-png">
+                    <img [src]="secondChild.png" alt="icon">
+                  </span>
+                  {{secondChild.name}}
+                  <mat-icon *ngIf="secondChild.items.length">{{secondChild.showSubMenu ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+                </span>
+                <ul class="submenu" *ngIf="secondChild.showSubMenu">
+                  <li *ngFor="let third of secondChild.items">
+                    <span class="menu__name" (click)="openSubmenu(third, drawer)" [ngClass]="{'is_active': third.is_active}">
+                      <span *ngIf="third.svg" [innerHtml]="getSvgOfItemList(third.svg)"></span>
+                      <span *ngIf="third.png" class="icon-png">
+                        <img [src]="third.png" alt="icon">
+                      </span>
+                      {{third.name}}
+                      <mat-icon *ngIf="third.items.length">{{third.showSubMenu ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+                    </span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </mat-sidenav>
+  <div class="example-sidenav-content">
+    <div class="example-sidenav-content__header">
+      <div class="burger-menu">
+        <div (click)="openMenu(drawer)" class="btn">
+          <div class="icon-bar" [@hamburguerX]="isHamburger ? 'hamburguer' : 'topX'"></div>
+          <div class="icon-bar" [@hamburguerX]="isHamburger ? 'hamburguer' : 'hide'"></div>
+          <div class="icon-bar" [@hamburguerX]="isHamburger ? 'hamburguer' : 'bottomX'"></div>
+        </div>
+      </div>
+      <div class="header-line"></div>
+    </div>
+    <div class="container-view">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-  <router-outlet></router-outlet>
-
-</div>
-
+</mat-sidenav-container>
